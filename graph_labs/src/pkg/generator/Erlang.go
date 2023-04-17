@@ -1,7 +1,6 @@
 package generator
 
 import (
-	"fmt"
 	"graph_labs/src/pkg/graph"
 	"math"
 	"math/rand"
@@ -10,13 +9,8 @@ import (
 	"log"
 )
 
-func NewErlingAcyclicOrientedGraph(VCount, ECount int) (*graph.Graph, error) {
-	log.Printf("func NewErlingGraph(%d, %d int\n", VCount, ECount)
-
-	if ECount > (VCount-1)*VCount {
-		log.Printf("Для %d вершин нельзя постровить ациклический граф с %d ребер\n", VCount, ECount)
-		return nil, fmt.Errorf("Для %d вершин нельзя постровить ациклический граф с %d ребер\n", VCount, ECount)
-	}
+func NewErlingAcyclicOrientedGraph(VCount int) (*graph.Graph, error) {
+	log.Printf("func NewErlingGraph(%d int\n", VCount)
 
 	G, _ := graph.NewGraph(VCount)
 
@@ -40,7 +34,7 @@ func NewErlingAcyclicOrientedGraph(VCount, ECount int) (*graph.Graph, error) {
 	}
 	log.Printf("Распределение вероятностей: %v", probabilities)
 	//формирование ациклического графа на основе распределения вероятностей
-	tmpECount := 0
+
 	for i := 0; i < VCount; i++ {
 		a := generateRandomNumber(probabilities)
 		zeroSlise := make([]int, i+1)
@@ -49,13 +43,7 @@ func NewErlingAcyclicOrientedGraph(VCount, ECount int) (*graph.Graph, error) {
 		slise = append(zeroSlise, slise...)
 		for j, v := range slise {
 
-			if tmpECount >= ECount {
-				continue
-			}
 			G.Set(i, j, v)
-			if v != 0 {
-				tmpECount++
-			}
 
 		}
 

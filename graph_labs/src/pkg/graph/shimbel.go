@@ -3,9 +3,10 @@ package graph
 import (
 	"fmt"
 	"log"
+	"math"
 )
 
-func (G *Graph) Shimbel_step(step int, fun string) *Graph {
+func (G *Graph) ShimbelStep(step int, fun string) *Graph {
 	//step соответствует степени
 	res := G
 	for i := 0; i < step-1; i++ {
@@ -19,14 +20,14 @@ func (G *Graph) ShimbelDistanceMatrix(fun string) *Graph {
 	// min  минимальный маршрут от точки до точки
 	// max  максимальный маршрут от точки до точки
 	res, err := NewGraph(G.GetVCount())
-
+	res.Flags["oriented"] = true
 	if err != nil {
 		log.Print(err)
 	}
 
 	ShimbelSteps := make([]*Graph, 0)
 	for i := 1; i < G.GetVCount(); i++ {
-		tmp := G.Shimbel_step(i, fun)
+		tmp := G.ShimbelStep(i, fun)
 		ShimbelSteps = append(ShimbelSteps, tmp)
 	}
 
@@ -45,9 +46,11 @@ func (G *Graph) ShimbelDistanceMatrix(fun string) *Graph {
 			} else {
 				value = min(arrIJ)
 			}
+			log.Printf("%d, %d : %d", i, j, value)
 			res.Set(i, j, value)
 		}
 	}
+
 	return res
 }
 
@@ -88,28 +91,46 @@ func ShimbelMultiply(b, a *Graph, fun string) *Graph {
 	return result
 }
 
-func (G *Graph) HowManuRoads(start, stop int) string {
-	log.Printf("start HowManuRoads\n")
+func (G *Graph) CountPaths(start int, end int) (int, int) {
+	count := 0
+	shortestPath := math.MaxInt32
+	n := G.vCount
 
-	if start == stop {
-		return fmt.Sprintf("%v is %v:   Minimum road = %v \n", start, stop, 0)
-	}
-
-	// Инициализация массива для хранения количества путей до каждой вершины
-	counts := make([]int, G.vCount)
-	counts[start] = 1 // Количество путей до начальной вершины равно 1
-
-	// Проход по матрице смежности с использованием алгоритма динамического программирования
-	for i := 0; i < G.vCount; i++ {
-		for j := 0; j < G.vCount; j++ {
-			if G.Amatrix[i][j] == 1 {
-				counts[j] += counts[i] // Обновление количества путей до вершины j
+	var dfs func(current int, path []int)
+	dfs = func(current int, path []int) {
+		if current == end {
+			count++
+			shortestPath = minAB(shortestPath, len(path)-1)
+			return
+		}
+		for i := 0; i < n; i++ {
+			if G.Amatrix[current][i] == 1 && !contains(path, i) {
+				dfs(i, append(path, i))
 			}
 		}
 	}
-	//return counts[end] // Количество путей до конечной вершины
-	return fmt.Sprintf("From %v to %v: There are %v roads.  Minimum road = %v \n", start, stop, counts[stop])
 
+	dfs(start, []int{start})
+	if count == 0 {
+		return -1, -1
+	}
+	return count, shortestPath
+}
+
+func contains(lst []int, el int) bool {
+	for _, v := range lst {
+		if v == el {
+			return true
+		}
+	}
+	return false
+}
+
+func minAB(a, b int) int {
+	if a < b {
+		return a
+	}
+	return b
 }
 
 func countNZero(arrRoad []int) (countNZero int) {

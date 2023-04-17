@@ -49,7 +49,8 @@ func (myMenu *Menu) MainMenu() {
 			fmt.Println("Bершины с таким индексом нет")
 			break
 		}
-		//fmt.Println(myMenu.graph.HowManuRoads(a, b))
+		count, shortestPath := myMenu.graph.CountPaths(a, b)
+		fmt.Printf("из %d в %d есть %d путей. Самый короткий %d\n", a, b, count, shortestPath)
 
 	case 4:
 		fmt.Printf("" +
@@ -71,7 +72,7 @@ func (myMenu *Menu) MainMenu() {
 			fmt.Println("введите функцию min или max\n")
 			fun := ""
 			fmt.Scan(&fun)
-			myMenu.graph.Shimbel_step(choiseStep, fun).PrintLabel("Матрица Шимбала для шага " + strconv.Itoa(choiseStep) + "и функции " + fun)
+			myMenu.graph.ShimbelStep(choiseStep, fun).PrintLabel("Матрица Шимбала для шага " + strconv.Itoa(choiseStep) + "и функции " + fun)
 		}
 	case 5:
 		fmt.Println("Введите стартовую вершину для алгоритма Дейкстры\n")
@@ -106,15 +107,11 @@ func (myMenu *Menu) Generated() {
 
 	graphVeriant := 0
 	VCount := 0
-	ECount := 0
 
 	fmt.Scan(&graphVeriant)
 	Cls()
 	fmt.Printf("количество вершин:\n")
 	fmt.Scan(&VCount)
-
-	fmt.Printf("количество ребер:\n")
-	fmt.Scan(&ECount)
 
 	var myGraph *graph.Graph
 	var err error
@@ -122,11 +119,9 @@ func (myMenu *Menu) Generated() {
 	switch graphVeriant {
 	case 1:
 
-		myGraph, err = generator.NewErlingAcyclicOrientedGraph(VCount, ECount)
+		myGraph, err = generator.NewErlingAcyclicOrientedGraph(VCount)
 		if err != nil {
-
-			fmt.Printf("Для %d вершин нельзя постровить ациклический граф с %d ребер\n", VCount, ECount)
-
+			fmt.Printf("Для %d вершин нельзя постровить ациклический граф с %d ребер\n", VCount)
 			return
 		}
 	default:
