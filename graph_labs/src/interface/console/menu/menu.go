@@ -18,7 +18,11 @@ type Menu struct {
 func Cls() {
 	cls := exec.Command("cmd", "/c", "cls")
 	cls.Stdout = os.Stdout
-	cls.Run()
+	err := cls.Run()
+
+	if err != nil {
+		log.Printf("Ошибка очистки консоли\n")
+	}
 }
 
 func (myMenu *Menu) MainMenu() {
@@ -28,11 +32,12 @@ func (myMenu *Menu) MainMenu() {
 		"3) Число дорог из A в B\n" +
 		"4) Показать матрицу Шимбала\n" +
 		"5) Применить алгоритм Дейкстры\n" +
-		"6) Применить алгориитм Беллмана-Форда\n")
-	choiseMainMenu := 0
-	fmt.Scan(&choiseMainMenu)
+		"6) Применить алгориитм Беллмана-Форда\n" +
+		"7) Применить алгориитм Флойда\n")
+	choiceMainMenu := 0
+	_, _ = fmt.Scan(&choiceMainMenu)
 	Cls()
-	switch choiseMainMenu {
+	switch choiceMainMenu {
 	case 1:
 		myMenu.Generated()
 	case 2:
@@ -40,7 +45,7 @@ func (myMenu *Menu) MainMenu() {
 	case 3:
 		a, b := 0, 0
 		fmt.Println("Введите начальную и конечную вершины")
-		fmt.Scan(&a, &b)
+		_, _ = fmt.Scan(&a, &b)
 		if a == b {
 			fmt.Println("a == b")
 			return
@@ -50,51 +55,111 @@ func (myMenu *Menu) MainMenu() {
 			break
 		}
 		count, shortestPath := myMenu.graph.CountPaths(a, b)
-		fmt.Printf("из %d в %d есть %d путей. Самый короткий %d\n", a, b, count, shortestPath)
+		if count == -1 {
 
+			fmt.Printf("из %d в %d нет пути.\n", a, b)
+
+		} else {
+
+			fmt.Printf("из %d в %d есть %d путей. Самый короткий %d\n", a, b, count, shortestPath)
+
+		}
 	case 4:
 		fmt.Printf("" +
 			"1) результирующая матрица шимбала\n" +
 			"2) шаг матрицы шимбала\n")
 		choiseShimbal := 0
-		fmt.Scan(&choiseShimbal)
+		_, _ = fmt.Scan(&choiseShimbal)
 		switch choiseShimbal {
 		case 1:
 			fmt.Println("введите функцию min или max\n")
 			fun := ""
-			fmt.Scan(&fun)
+			_, _ = fmt.Scan(&fun)
 			myMenu.graph.ShimbelDistanceMatrix(fun).PrintLabel("Результурующая матрица шимбала для функции " + fun)
 
 		case 2:
 			fmt.Println("введите шаг для матрицы Шимбала\n")
 			choiseStep := 0
-			fmt.Scan(&choiseStep)
+			_, _ = fmt.Scan(&choiseStep)
 			fmt.Println("введите функцию min или max\n")
 			fun := ""
-			fmt.Scan(&fun)
+			_, _ = fmt.Scan(&fun)
 			myMenu.graph.ShimbelStep(choiseStep, fun).PrintLabel("Матрица Шимбала для шага " + strconv.Itoa(choiseStep) + "и функции " + fun)
 		}
 	case 5:
+
 		fmt.Println("Введите стартовую вершину для алгоритма Дейкстры\n")
 		startV := 0
-		fmt.Scan(&startV)
-		if startV > myMenu.graph.GetVCount() {
+		_, _ = fmt.Scan(&startV)
+
+		fmt.Println("Введите конечную вершину для алгоритма Дейкстры\n")
+		finishV := 0
+		_, _ = fmt.Scan(&finishV)
+
+		if startV > myMenu.graph.GetVCount() || finishV > myMenu.graph.GetVCount() {
+
 			fmt.Println("нет такой вершины")
 			break
+
 		}
-		fmt.Println("тут должен быть алгоритм дейкстры")
+
+		distance, path, err := myMenu.graph.Dijkstra(startV, finishV)
+		if err != nil {
+			log.Print(err)
+			fmt.Println("ошибка")
+		}
+
+		if len(path) == 0 {
+			fmt.Printf("между вершинами %d и  %d пути нет\n", startV, finishV)
+			break
+		}
+
+		fmt.Printf("между вершинами %d и  %d путь длинной %d: %v ", startV, finishV, distance, path)
 	case 6:
+
 		fmt.Println("Введите стартовую вершину для алгоритма Беллмана Форда\n")
 		startV := 0
-		fmt.Scan(&startV)
+		_, _ = fmt.Scan(&startV)
+
+		fmt.Println("Введите конечную вершину для алгоритма  Беллмана Форда\n")
+		finishV := 0
+		_, _ = fmt.Scan(&finishV)
+
 		if startV > myMenu.graph.GetVCount() {
 			fmt.Println("нет такой вершины")
 			break
 		}
-		fmt.Println("тут должен быть алгоритм Беллмана-Форда")
+		distance, path, err := myMenu.graph.BellmanFord(startV, finishV)
+		if err != nil {
+			log.Print(err)
+			fmt.Println("ошибка")
+		}
+
+		fmt.Printf("между вершинами %d и  %d путь длинной %d: %v ", startV, finishV, distance, path)
+	case 7:
+		fmt.Println("Введите стартовую вершину для алгоритма Флойда\n")
+		startV := 0
+		_, _ = fmt.Scan(&startV)
+
+		fmt.Println("Введите конечную вершину для алгоритма  Флойда\n")
+		finishV := 0
+		_, _ = fmt.Scan(&finishV)
+
+		if startV > myMenu.graph.GetVCount() {
+			fmt.Println("нет такой вершины")
+			break
+		}
+		distanceMatrix, err := myMenu.graph.Floid(startV, finishV)
+		if err != nil {
+			log.Print(err)
+			fmt.Println("ошибка")
+		}
+
+		fmt.Printf("между вершинами %d и  %d  матрица расстояний:\n %v \n", startV, finishV, distanceMatrix)
+
 	}
 
-	fmt.Scanln()
+	_, _ = fmt.Scanln()
 }
 
 func (myMenu *Menu) Generated() {
@@ -108,10 +173,10 @@ func (myMenu *Menu) Generated() {
 	graphVeriant := 0
 	VCount := 0
 
-	fmt.Scan(&graphVeriant)
+	_, _ = fmt.Scan(&graphVeriant)
 	Cls()
 	fmt.Printf("количество вершин:\n")
-	fmt.Scan(&VCount)
+	_, _ = fmt.Scan(&VCount)
 
 	var myGraph *graph.Graph
 	var err error
@@ -143,7 +208,7 @@ func (myMenu *Menu) Print() {
 
 	ChoisePrint := 0
 
-	fmt.Scan(&ChoisePrint)
+	_, _ = fmt.Scan(&ChoisePrint)
 
 	switch ChoisePrint {
 	case 1:
@@ -151,6 +216,8 @@ func (myMenu *Menu) Print() {
 
 	case 2:
 		myMenu.graph.Render()
+	default:
+		fmt.Println("не та кнопка")
 	}
 }
 
@@ -158,8 +225,9 @@ func ConsoleMenu() {
 	Cls()
 	var menu Menu
 	for {
+		Cls()
 		menu.MainMenu()
-		fmt.Scanln()
+		_, _ = fmt.Scanln()
 	}
 
 }

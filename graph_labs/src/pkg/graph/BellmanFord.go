@@ -1,8 +1,10 @@
 package graph
 
-import "log"
+import (
+	"fmt"
+)
 
-func (G *Graph) BellmanFord(a, b int) (path []int, err error) {
-	log.Printf("func (G *Graph) BellmanFord(%d, %d int) (%v []int, %s error))\n", a, b, path, err)
-	return nil, nil
+func (G *Graph) BellmanFord(a, b int) (len int, path []int, err error) {
+	fmt.Printf("func (G *Graph) BellmanFord(%d, %d int) (%v int, %v []int, %s error))\n", a, b, len, path, err)
+	return 0, nil, nil
 }
