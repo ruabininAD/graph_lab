@@ -112,11 +112,39 @@ func (G *Graph) GetVCount() int {
 	return G.vCount
 }
 
-func (G *Graph) SetRandomWeigh() {
+func (G *Graph) SetRandomWeight(flag string) {
+
+	G.Flags["weight"] = true
+
+	if flag == "-" {
+		G.Flags["negativeWeight"] = true
+	}
+
+	//	negative weight
 	for i := 0; i < G.vCount; i++ {
 		for j := 0; j < G.vCount; j++ {
 			if G.Get(i, j) != 0 {
-				G.Set(i, j, rand.Intn(100))
+				if flag == "+" {
+					G.Set(i, j, rand.Intn(100))
+				} else {
+					G.Set(i, j, rand.Intn(100)-22)
+				}
+
+			}
+		}
+	}
+
+}
+
+func (G *Graph) RemoveWeights() {
+
+	G.Flags["weight"] = false
+
+	//	negative weight
+	for i := 0; i < G.vCount; i++ {
+		for j := 0; j < G.vCount; j++ {
+			if G.Get(i, j) != 0 {
+				G.Set(i, j, 1)
 			}
 		}
 	}

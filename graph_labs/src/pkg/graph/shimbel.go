@@ -100,11 +100,12 @@ func (G *Graph) CountPaths(start int, end int) (int, int) {
 	dfs = func(current int, path []int) {
 		if current == end {
 			count++
+			//count += G.Get(path[len(path)-1], current)
 			shortestPath = minAB(shortestPath, len(path)-1)
 			return
 		}
 		for i := 0; i < n; i++ {
-			if G.Amatrix[current][i] == 1 && !contains(path, i) {
+			if G.Amatrix[current][i] != 0 && !contains(path, i) {
 				dfs(i, append(path, i))
 			}
 		}

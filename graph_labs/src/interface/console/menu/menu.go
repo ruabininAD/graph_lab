@@ -32,8 +32,9 @@ func (myMenu *Menu) MainMenu() {
 		"3) Число дорог из A в B\n" +
 		"4) Показать матрицу Шимбала\n" +
 		"5) Применить алгоритм Дейкстры\n" +
-		"6) Применить алгориитм Беллмана-Форда\n" +
-		"7) Применить алгориитм Флойда\n")
+		"6) Применить алгоритм Беллмана-Форда\n" +
+		"7) Применить алгоритм Флойда\n" +
+		"8) Добавить веса\n")
 	choiceMainMenu := 0
 	_, _ = fmt.Scan(&choiceMainMenu)
 	Cls()
@@ -129,7 +130,7 @@ func (myMenu *Menu) MainMenu() {
 			fmt.Println("нет такой вершины")
 			break
 		}
-		distance, path, err := myMenu.graph.BellmanFord(startV, finishV)
+		path, distance, err := myMenu.graph.BellmanFord(startV, finishV)
 		if err != nil {
 			log.Print(err)
 			fmt.Println("ошибка")
@@ -156,7 +157,23 @@ func (myMenu *Menu) MainMenu() {
 		}
 
 		fmt.Printf("между вершинами %d и  %d  матрица расстояний:\n %v \n", startV, finishV, distanceMatrix)
+	case 8:
+		fmt.Printf("" +
+			"1) только положительные значения\n" +
+			"2) любые значения\n")
+		chioceWeight := 0
+		fmt.Scan(&chioceWeight)
+		switch chioceWeight {
+		case 1:
+			myMenu.graph.SetRandomWeight("+")
+		case 2:
+			myMenu.graph.SetRandomWeight("-")
+		default:
+			fmt.Println("не та кнопочка")
+		}
 
+	default:
+		fmt.Println("не та кнопочка")
 	}
 
 	_, _ = fmt.Scanln()
@@ -204,7 +221,8 @@ func (myMenu *Menu) Generated() {
 func (myMenu *Menu) Print() {
 	fmt.Println(
 		"1) вывести в консоль\n" +
-			"2) рендер")
+			"2) рендер\n" +
+			"3) показать свойства\n")
 
 	ChoisePrint := 0
 
@@ -216,6 +234,17 @@ func (myMenu *Menu) Print() {
 
 	case 2:
 		myMenu.graph.Render()
+
+	case 3:
+		for key, v := range myMenu.graph.Flags {
+
+			if v == true {
+				fmt.Printf("%s ", key)
+			}
+
+		}
+		fmt.Println()
+
 	default:
 		fmt.Println("не та кнопка")
 	}

@@ -1,6 +1,7 @@
 package graph
 
 import (
+	"fmt"
 	"log"
 	"math"
 )
@@ -10,6 +11,11 @@ const inf = math.MaxInt32
 func (G *Graph) Dijkstra(start, finish int) (len int, path []int, err error) {
 
 	log.Printf("func (G *Graph) Dijkstra(%d, %d int) (%v int ,%v []int, %s error))\n", start, finish, len, path, err)
+
+	if G.Flags["weight"] == true {
+
+		return 0, nil, fmt.Errorf("Алгоритм Дейкстры не работает в  взвешеным графом ")
+	}
 
 	dist := make([]int, G.vCount)     // слайс для хранения расстояний от начальной вершины до остальных вершин
 	visited := make([]bool, G.vCount) // слайс для отслеживания посещенных вершин
@@ -49,5 +55,10 @@ func (G *Graph) Dijkstra(start, finish int) (len int, path []int, err error) {
 		u = prev[u]
 	}
 
-	return 0, path, nil
+	count := -1
+	for _, _ = range path {
+		count++
+	}
+
+	return count, path, nil
 }
