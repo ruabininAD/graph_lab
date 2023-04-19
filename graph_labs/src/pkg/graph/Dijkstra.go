@@ -12,7 +12,7 @@ func (G *Graph) Dijkstra(start, finish int) (len int, path []int, err error) {
 
 	log.Printf("func (G *Graph) Dijkstra(%d, %d int) (%v int ,%v []int, %s error))\n", start, finish, len, path, err)
 
-	if G.Flags["weight"] == true {
+	if G.Flags["negativeWeight"] == true {
 
 		return 0, nil, fmt.Errorf("Алгоритм Дейкстры не работает в  взвешеным графом ")
 	}

@@ -46,16 +46,21 @@ func (myMenu *Menu) MainMenu() {
 		myMenu.Print()
 	case 3:
 		a, b := 0, 0
+
+		myMenu.graph.PrintLabel("граф:")
+
 		fmt.Println("Введите начальную и конечную вершины")
 		_, _ = fmt.Scan(&a, &b)
 		if a == b {
 			fmt.Println("a == b")
 			return
 		}
+
 		if a > myMenu.graph.GetVCount() || b > myMenu.graph.GetVCount() {
 			fmt.Println("Bершины с таким индексом нет")
 			break
 		}
+
 		count, shortestPath := myMenu.graph.CountPaths(a, b)
 		if count == -1 {
 

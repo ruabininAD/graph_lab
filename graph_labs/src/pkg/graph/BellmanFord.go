@@ -34,6 +34,7 @@ func (G *Graph) BellmanFord(start, end int) ([]int, int, error) {
 
 	finish := end
 	// initialize distances to infinity
+
 	distance := make([]int, G.vCount)
 	for i := range distance {
 		distance[i] = math.MaxInt32

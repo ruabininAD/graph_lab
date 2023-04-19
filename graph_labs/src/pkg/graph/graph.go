@@ -139,6 +139,7 @@ func (G *Graph) SetRandomWeight(flag string) {
 func (G *Graph) RemoveWeights() {
 
 	G.Flags["weight"] = false
+	G.Flags["negativeWeight"] = false
 
 	//	negative weight
 	for i := 0; i < G.vCount; i++ {
