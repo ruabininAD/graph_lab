@@ -28,12 +28,18 @@ import (
 //		return 0, nil, nil
 //	}
 func (G *Graph) BellmanFord(start, end int) ([]int, int, error) {
+	if start < end {
+		start, end = end, start
+	}
+
 	finish := end
 	// initialize distances to infinity
 	distance := make([]int, G.vCount)
 	for i := range distance {
 		distance[i] = math.MaxInt32
 	}
+
+	log.Printf(" BellmanFord(%d , %d int) ", start, end)
 
 	// set distance to start vertex to 0
 	distance[start] = 0

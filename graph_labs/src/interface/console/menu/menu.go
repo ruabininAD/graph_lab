@@ -5,6 +5,7 @@ import (
 	"graph_labs/src/pkg/generator"
 	"graph_labs/src/pkg/graph"
 	"log"
+	"math"
 	"os"
 	"os/exec"
 	"strconv"
@@ -138,31 +139,16 @@ func (myMenu *Menu) MainMenu() {
 
 		fmt.Printf("между вершинами %d и  %d путь длинной %d: %v ", startV, finishV, distance, path)
 	case 7:
-		fmt.Println("Введите стартовую вершину для алгоритма Флойда\n")
-		startV := 0
-		_, _ = fmt.Scan(&startV)
 
-		fmt.Println("Введите конечную вершину для алгоритма  Флойда\n")
-		finishV := 0
-		_, _ = fmt.Scan(&finishV)
+		dist, next, paths := myMenu.graph.Floid()
+		printResFloid(dist, next, paths)
 
-		if startV > myMenu.graph.GetVCount() {
-			fmt.Println("нет такой вершины")
-			break
-		}
-		distanceMatrix, err := myMenu.graph.Floid(startV, finishV)
-		if err != nil {
-			log.Print(err)
-			fmt.Println("ошибка")
-		}
-
-		fmt.Printf("между вершинами %d и  %d  матрица расстояний:\n %v \n", startV, finishV, distanceMatrix)
 	case 8:
 		fmt.Printf("" +
 			"1) только положительные значения\n" +
 			"2) любые значения\n")
 		chioceWeight := 0
-		fmt.Scan(&chioceWeight)
+		_, _ = fmt.Scan(&chioceWeight)
 		switch chioceWeight {
 		case 1:
 			myMenu.graph.SetRandomWeight("+")
@@ -259,4 +245,33 @@ func ConsoleMenu() {
 		_, _ = fmt.Scanln()
 	}
 
+}
+
+func printResFloid(dist, next [][]int, paths map[string][]int) {
+
+	// вывод матрицы расстояний
+	fmt.Println("Матрица расстояний:")
+
+	for _, row := range dist {
+		for _, v := range row {
+			if v == math.MaxInt32 {
+				fmt.Printf("inf\t")
+			} else {
+				fmt.Printf("%d\t", v)
+			}
+		}
+		fmt.Println()
+	}
+
+	// вывод матрицы следующих вершин на пути
+	//fmt.Println("Матрица следующих вершин:")
+	//for _, row := range next {
+	//	fmt.Println(row)
+	//}
+
+	// вывод всех путей
+	fmt.Println("Все пути:")
+	for key, value := range paths {
+		fmt.Printf("%s: %v\n", key, value)
+	}
 }

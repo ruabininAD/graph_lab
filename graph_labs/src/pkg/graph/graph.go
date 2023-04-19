@@ -150,6 +150,10 @@ func (G *Graph) RemoveWeights() {
 	}
 }
 
+func (G *Graph) GetAMatrix() [][]int {
+	return G.Amatrix
+}
+
 func max(arr []int) int {
 	max := arr[0]
 	for _, element := range arr {
