@@ -91,8 +91,8 @@ func ShimbelMultiply(b, a *Graph, fun string) *Graph {
 	return result
 }
 
-func (G *Graph) CountPaths(start int, end int) (int, int) {
-	count := 0
+func (G *Graph) CountPaths(start int, end int) (count int, paths []int, weight int) {
+
 	shortestPath := math.MaxInt32
 	n := G.vCount
 
@@ -100,8 +100,8 @@ func (G *Graph) CountPaths(start int, end int) (int, int) {
 	dfs = func(current int, path []int) {
 		if current == end {
 			count++
-			//count += G.Get(path[len(path)-1], current)
 			shortestPath = minAB(shortestPath, len(path)-1)
+			paths = path
 			return
 		}
 		for i := 0; i < n; i++ {
@@ -113,9 +113,17 @@ func (G *Graph) CountPaths(start int, end int) (int, int) {
 
 	dfs(start, []int{start})
 	if count == 0 {
-		return -1, -1
+		return -1, nil, -1
 	}
-	return count, shortestPath
+
+	for i, _ := range paths {
+		if i == 0 {
+			continue
+		}
+		weight += G.Get(paths[i-1], paths[i])
+	}
+
+	return count, paths, weight
 }
 
 func contains(lst []int, el int) bool {

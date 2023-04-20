@@ -61,14 +61,14 @@ func (myMenu *Menu) MainMenu() {
 			break
 		}
 
-		count, shortestPath := myMenu.graph.CountPaths(a, b)
+		count, path, weight := myMenu.graph.CountPaths(a, b)
 		if count == -1 {
 
 			fmt.Printf("из %d в %d нет пути.\n", a, b)
 
 		} else {
 
-			fmt.Printf("из %d в %d есть %d путей. Самый короткий %d\n", a, b, count, shortestPath)
+			fmt.Printf("из %d в %d есть %d путей. Минимальный путь:  %v  вес: %d \n", a, b, count, path, weight)
 
 		}
 	case 4:
@@ -95,12 +95,19 @@ func (myMenu *Menu) MainMenu() {
 		}
 	case 5:
 
+		myMenu.graph.PrintLabel("граф:")
+
+		if myMenu.graph.Flags["negativeWeight"] == true {
+			fmt.Println("Невозможно применить алгоритм дейкстры для графа с отрицательными весами\n")
+			break
+		}
 		fmt.Println("Введите стартовую вершину для алгоритма Дейкстры\n")
 		startV := 0
 		_, _ = fmt.Scan(&startV)
 
 		fmt.Println("Введите конечную вершину для алгоритма Дейкстры\n")
 		finishV := 0
+
 		_, _ = fmt.Scan(&finishV)
 
 		if startV > myMenu.graph.GetVCount() || finishV > myMenu.graph.GetVCount() {
@@ -124,6 +131,8 @@ func (myMenu *Menu) MainMenu() {
 		fmt.Printf("между вершинами %d и  %d путь длинной %d: %v ", startV, finishV, distance, path)
 	case 6:
 
+		myMenu.graph.PrintLabel("граф:")
+
 		fmt.Println("Введите стартовую вершину для алгоритма Беллмана Форда\n")
 		startV := 0
 		_, _ = fmt.Scan(&startV)
@@ -145,13 +154,16 @@ func (myMenu *Menu) MainMenu() {
 		fmt.Printf("между вершинами %d и  %d путь длинной %d: %v ", startV, finishV, distance, path)
 	case 7:
 
+		myMenu.graph.PrintLabel("граф:")
+
 		dist, next, paths := myMenu.graph.Floid()
 		printResFloid(dist, next, paths)
 
 	case 8:
 		fmt.Printf("" +
 			"1) только положительные значения\n" +
-			"2) любые значения\n")
+			"2) любые значения\n" +
+			"3) Сделать веса единичными\n")
 		chioceWeight := 0
 		_, _ = fmt.Scan(&chioceWeight)
 		switch chioceWeight {
@@ -159,6 +171,9 @@ func (myMenu *Menu) MainMenu() {
 			myMenu.graph.SetRandomWeight("+")
 		case 2:
 			myMenu.graph.SetRandomWeight("-")
+		case 3:
+			myMenu.graph.RemoveWeights()
+
 		default:
 			fmt.Println("не та кнопочка")
 		}
